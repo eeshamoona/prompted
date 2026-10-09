@@ -96,7 +96,7 @@ export function Editor({ promptId, action = saveEntry, nudgeQuestion, submitLabe
     });
   }
 
-  const shared = "w-full whitespace-pre-wrap break-words p-1 text-lg leading-[1.75] font-sans";
+  const shared = "whitespace-pre-wrap break-words p-1 text-lg leading-[1.75] font-sans";
   const hint =
     nudges > 0
       ? "Softer text came from a nudge. Keep it, change it, or let it go."
@@ -106,7 +106,7 @@ export function Editor({ promptId, action = saveEntry, nudgeQuestion, submitLabe
     <div className="flex flex-1 flex-col gap-4">
       <div className="relative -mx-2 flex-1 rounded-lg px-2 ring-1 ring-transparent transition-shadow focus-within:ring-border">
         {/* Mirror layer shows nudge text in a softer color; the textarea on top handles typing. */}
-        <div aria-hidden="true" className={`${shared} min-h-64 text-foreground`}>
+        <div aria-hidden="true" className={`${shared} min-h-64 w-full text-foreground`}>
           {runsOf(chars).map((run, i) => (
             <span key={i} className={run.ai ? "text-nudge" : undefined}>{run.text}</span>
           ))}
