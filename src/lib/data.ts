@@ -29,6 +29,11 @@ export type Entry = {
   mood: "better" | "same" | "not_really" | null;
   reread_count: number;
   last_reread_on: string | null;
+  reply_question: string | null;
+  reply_text: string | null;
+  reply_ai_spans: [number, number][];
+  reply_reaction: string | null;
+  replied_at: string | null;
   created_at: string;
   v2_prompts?: { text: string; category: string } | null;
 };

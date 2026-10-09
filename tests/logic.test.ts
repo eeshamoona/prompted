@@ -78,3 +78,36 @@ test("deleting a nudge removes its marking entirely", () => {
   assert.deepEqual(spansOf(chars), []);
   assert.equal(textOf(chars), "Hello");
 });
+
+import { extractQuestion, milestoneFor, withoutQuestion, wordFrequencies } from "../src/lib/text";
+import { promptNumber } from "../src/lib/dates";
+
+test("prompt number matches the day (Oct 8, 2026 is No. 281)", () => {
+  assert.equal(promptNumber("2026-01-01"), 1);
+  assert.equal(promptNumber("2026-10-08"), 281);
+});
+
+test("the reader's closing question is found and separated from the note", () => {
+  const note = "“Favorite childhood food” is a table of tiny time machines. I love it; what dish would you most want someone to make for you?";
+  const q = extractQuestion(note);
+  assert.equal(q, "I love it; what dish would you most want someone to make for you?");
+  assert.equal(withoutQuestion(note, q), "“Favorite childhood food” is a table of tiny time machines.");
+  assert.equal(extractQuestion("No question here. Just warmth!"), null);
+  assert.equal(extractQuestion(null), null);
+});
+
+test("your words skip common words and anything that came from a nudge", () => {
+  const text = "Pizza pizza and more pizza, plus garlic bread forever";
+  const start = text.indexOf("garlic");
+  const words = wordFrequencies([{ text, ai_spans: [[start, text.length]] }]);
+  assert.deepEqual(words[0], { word: "pizza", count: 3 });
+  assert.ok(!words.some((w) => w.word === "garlic" || w.word === "and"));
+});
+
+test("milestones: first answer, 7 and 30 days, only for today's entry", () => {
+  assert.equal(milestoneFor(1, 1, true), "first");
+  assert.equal(milestoneFor(9, 7, true), "week");
+  assert.equal(milestoneFor(40, 30, true), "month");
+  assert.equal(milestoneFor(9, 5, true), null);
+  assert.equal(milestoneFor(1, 1, false), null);
+});

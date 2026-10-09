@@ -9,7 +9,7 @@ const TRIAL_COOKIE = "prompted_trial_nudges";
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
-  const body = (await request.json().catch(() => null)) as { promptId?: number; text?: string } | null;
+  const body = (await request.json().catch(() => null)) as { promptId?: number; question?: string; text?: string } | null;
   const prompt = body?.promptId ? await getPrompt(Number(body.promptId)) : null;
   if (!prompt) return NextResponse.json({ error: "Unknown prompt." }, { status: 400 });
 
@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
 
   const text = String(body?.text ?? "").slice(-4000);
   try {
-    const fragment = await nudge(prompt.text, text);
+    // Part two: signed-in writers answering their reader's question get nudges toward that question.
+    const question = user && body?.question ? String(body.question).slice(0, 300) : null;
+    const fragment = await nudge(question ?? prompt.text, text);
     const res = NextResponse.json({ fragment });
     if (!user) res.cookies.set(TRIAL_COOKIE, String(trialUsed + 1), { httpOnly: true, sameSite: "lax", maxAge: 60 * 60 * 24 * 365, path: "/" });
     return res;

@@ -6,6 +6,7 @@ import { getProfile, requireUser } from "@/lib/data";
 import { getPrompt } from "@/lib/prompts";
 import { localDate } from "@/lib/dates";
 import { reaction } from "@/lib/ai";
+import { extractQuestion } from "@/lib/text";
 
 type Input = { promptId: number; text: string; aiSpans: [number, number][]; nudgeCount: number; elapsedSeconds: number };
 
@@ -47,6 +48,7 @@ export async function saveEntry(input: Input): Promise<{ error: string } | void>
       elapsed_seconds: Math.max(0, Math.min(input.elapsedSeconds, 86400)),
       persona: profile.persona,
       reaction: readerNote,
+      reply_question: extractQuestion(readerNote),
     })
     .select("id")
     .single();

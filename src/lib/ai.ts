@@ -71,6 +71,7 @@ export async function reaction(prompt: string, text: string, persona: Persona): 
 Write 2 or 3 sentences, under 60 words, addressed to them as "you".
 Rules:
 - Quote or echo ONE specific phrase they wrote, so they know you really read it.
+- End with exactly ONE short, curious question that invites them to say a little more about THEIR answer (in your voice). It must be the last sentence.
 - Never give a score, grade, or rating. Never rewrite their answer or tell them it is "good writing" generically.
 - There is no right answer to the prompt; react to what makes THEIR answer theirs.
 - If the answer is very short, be just as warm and briefer.`,
@@ -78,4 +79,23 @@ Rules:
     max_output_tokens: 160,
   });
   return response.output_text.trim();
+}
+
+/** The reader's last word after the writer answers their question: warm, brief, and no new question. */
+export async function closingNote(question: string, reply: string, persona: Persona): Promise<string> {
+  const p = PERSONAS[persona] ?? PERSONAS.muse;
+  const response = await client.responses.create({
+    model: MODEL,
+    reasoning: { effort: "none" },
+    instructions: `You asked someone a question about their creative answer, and they replied. Your voice: ${p.tone}.
+Write ONE sentence, under 30 words, that warmly closes the exchange.
+Rules:
+- Echo one specific phrase from their reply.
+- Do NOT ask a question. Do not use a question mark. Do not invite more writing.
+- No scores, no advice, no rewriting.`,
+    input: `Your question: ${question}\n\nTheir reply:\n${reply}`,
+    max_output_tokens: 80,
+  });
+  // Guarantee the exchange ends here even if the model slips in a question.
+  return response.output_text.trim().replace(/\?+(["”’)]*)\s*$/, ".$1");
 }

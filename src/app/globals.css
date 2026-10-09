@@ -21,8 +21,8 @@
   --radius: 0.75rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+/* Dark theme: when chosen explicitly, or when following a dark system setting. */
+:root[data-theme="dark"] {
     --background: #161a17;
     --surface: #1d221e;
     --foreground: #e8ebe6;
@@ -34,6 +34,23 @@
     --nudge: #8fa89a;
     --ring: #8fb3a0;
     --destructive: #e07a6a;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+      --background: #161a17;
+      --surface: #1d221e;
+      --foreground: #e8ebe6;
+      --muted: #252b26;
+      --muted-foreground: #a3aba5;
+      --border: #343b35;
+      --primary: #8fb3a0;
+      --primary-foreground: #121613;
+      --nudge: #8fa89a;
+      --ring: #8fb3a0;
+      --destructive: #e07a6a;
+    color-scheme: dark;
   }
 }
 
@@ -67,4 +84,20 @@ body {
 *:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+
+/* Playful finish: a soft drift of color and the keepsake card settling in. */
+@keyframes drift {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(12px) rotate(-3deg); }
+  to { opacity: 1; transform: translateY(0) rotate(-1deg); }
+}
+.animate-drift { animation: drift 700ms ease-out both; }
+.animate-card-in { animation: card-in 500ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift, .animate-card-in { animation: none; }
 }

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { WeekDots } from "@/components/week-dots";
 import { swapPrompt } from "@/app/actions";
 import { getEntries, getProfile, getUser, progress } from "@/lib/data";
-import { DEFAULT_TZ, localDate, weekdayLong } from "@/lib/dates";
+import { DEFAULT_TZ, localDate, promptNumber, weekdayLong } from "@/lib/dates";
 import { CATEGORY_HINTS, getRotation, pickPrompt } from "@/lib/prompts";
 
 export default async function TodayPage({ searchParams }: PageProps<"/">) {
@@ -35,7 +35,7 @@ export default async function TodayPage({ searchParams }: PageProps<"/">) {
   return (
     <div className="flex flex-1 flex-col gap-8">
       <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <span>{weekdayLong(today)}</span>
+        <span>No. {promptNumber(today)} · {weekdayLong(today)}</span>
         {stats && <span>{stats.streak} {stats.streak === 1 ? "day" : "days"}</span>}
       </div>
       {stats && <WeekDots week={stats.week} />}
@@ -45,9 +45,10 @@ export default async function TodayPage({ searchParams }: PageProps<"/">) {
           {alt > 0 ? "Another prompt" : "Today"} · {prompt.category}
           <span className="normal-case tracking-normal text-muted-foreground"> — {CATEGORY_HINTS[prompt.category]}</span>
         </p>
-        <h1 id="prompt" className="font-serif text-4xl leading-tight text-balance sm:text-5xl">
+        <h1 id="prompt" className="font-serif text-[2.4rem] leading-tight text-balance sm:text-5xl">
           {prompt.text}
         </h1>
+        <p className="text-sm text-muted-foreground">A few minutes. No right answer.</p>
         {stats?.writtenToday && (
           <p className="text-sm text-muted-foreground">
             You’ve already written today. <Link href="/book" className="text-primary hover:underline">See it in your book</Link>, or write another.

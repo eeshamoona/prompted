@@ -6,15 +6,22 @@ import { saveEntry } from "./actions";
 import { saveDraft } from "@/lib/draft";
 import { applyEdit, insertNudge, runsOf, spansOf, textOf, type Char } from "@/lib/track";
 
+type Draft = { promptId: number; text: string; aiSpans: [number, number][]; nudgeCount: number; elapsedSeconds: number };
+
 type Props = {
   promptId: number;
+  /** Saves the answer. Defaults to saving a new entry; part two passes its own action. */
+  action?: (draft: Draft) => Promise<{ error: string } | void>;
+  /** For part two: nudges continue the answer to the reader's question instead of the prompt. */
+  nudgeQuestion?: string;
+  submitLabel?: string;
   /** "trial": no account yet. Finish keeps the answer in this browser and hands off to sign-up. */
   mode?: "signed-in" | "trial";
   nudgeLimit?: number;
   onTrialFinish?: () => void;
 };
 
-export function Editor({ promptId, mode = "signed-in", nudgeLimit, onTrialFinish }: Props) {
+export function Editor({ promptId, action = saveEntry, nudgeQuestion, submitLabel, mode = "signed-in", nudgeLimit, onTrialFinish }: Props) {
   const [chars, setChars] = useState<Char[]>([]);
   const [nudges, setNudges] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);
@@ -42,7 +49,7 @@ export function Editor({ promptId, mode = "signed-in", nudgeLimit, onTrialFinish
       const res = await fetch("/api/nudge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ promptId, text: text.slice(0, caret) }),
+        body: JSON.stringify({ promptId, question: nudgeQuestion, text: text.slice(0, caret) }),
       });
       if (res.status === 429) {
         setNudges(nudgeLimit ?? nudges);
@@ -84,7 +91,7 @@ export function Editor({ promptId, mode = "signed-in", nudgeLimit, onTrialFinish
       return;
     }
     startSaving(async () => {
-      const result = await saveEntry(draft);
+      const result = await action(draft);
       if (result?.error) setError(result.error);
     });
   }
@@ -123,7 +130,7 @@ export function Editor({ promptId, mode = "signed-in", nudgeLimit, onTrialFinish
           {nudging ? "Thinking…" : nudgeLimit !== undefined ? `Nudge (${nudgesLeft} left)` : "Nudge"}
         </Button>
         <Button type="button" onClick={onFinish} disabled={saving || text.trim().length === 0}>
-          {saving ? "Saving…" : mode === "trial" ? "Save my answer" : "Finish"}
+          {saving ? "Saving…" : mode === "trial" ? "Save my answer" : submitLabel ?? "Finish"}
         </Button>
       </div>
     </div>

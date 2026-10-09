@@ -45,3 +45,8 @@ export function weekdayLong(date: string): string {
 export function shortDate(date: string): string {
   return new Date(toUtcMs(date)).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 }
+
+/** The day's prompt number, like Wordle's: the same for everyone on a given date. */
+export function promptNumber(date: string): number {
+  return dayIndex(date) + 1;
+}
