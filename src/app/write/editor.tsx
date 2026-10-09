@@ -3,9 +3,18 @@
 import { useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { saveEntry } from "./actions";
+import { saveDraft } from "@/lib/draft";
 import { applyEdit, insertNudge, runsOf, spansOf, textOf, type Char } from "@/lib/track";
 
-export function Editor({ promptId }: { promptId: number }) {
+type Props = {
+  promptId: number;
+  /** "trial": no account yet. Finish keeps the answer in this browser and hands off to sign-up. */
+  mode?: "signed-in" | "trial";
+  nudgeLimit?: number;
+  onTrialFinish?: () => void;
+};
+
+export function Editor({ promptId, mode = "signed-in", nudgeLimit, onTrialFinish }: Props) {
   const [chars, setChars] = useState<Char[]>([]);
   const [nudges, setNudges] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);
@@ -15,6 +24,7 @@ export function Editor({ promptId }: { promptId: number }) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
   const text = textOf(chars);
+  const nudgesLeft = nudgeLimit === undefined ? Infinity : Math.max(0, nudgeLimit - nudges);
 
   // Typing, pasting and deleting are all "yours": diff old vs new text and mark the changed middle as user text.
   function onChange(next: string) {
@@ -23,6 +33,7 @@ export function Editor({ promptId }: { promptId: number }) {
   }
 
   async function onNudge() {
+    if (nudgesLeft <= 0) return;
     setError(null);
     setNudging(true);
     if (startedAt === null) setStartedAt(Date.now());
@@ -33,6 +44,10 @@ export function Editor({ promptId }: { promptId: number }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ promptId, text: text.slice(0, caret) }),
       });
+      if (res.status === 429) {
+        setNudges(nudgeLimit ?? nudges);
+        throw new Error("limit");
+      }
       if (!res.ok) throw new Error();
       const { fragment } = (await res.json()) as { fragment: string };
       setChars((prev) => insertNudge(prev, caret, fragment));
@@ -43,8 +58,12 @@ export function Editor({ promptId }: { promptId: number }) {
         el.focus();
         el.setSelectionRange(caret + fragment.length, caret + fragment.length);
       });
-    } catch {
-      setError("The nudge didn’t come through. Try again in a moment.");
+    } catch (e) {
+      setError(
+        e instanceof Error && e.message === "limit"
+          ? "That was your trial nudge. Create an account for more."
+          : "The nudge didn’t come through. Try again in a moment."
+      );
     } finally {
       setNudging(false);
     }
@@ -52,14 +71,29 @@ export function Editor({ promptId }: { promptId: number }) {
 
   function onFinish() {
     setError(null);
-    const elapsed = startedAt ? Math.round((Date.now() - startedAt) / 1000) : 0;
+    const draft = {
+      promptId,
+      text,
+      aiSpans: spansOf(chars),
+      nudgeCount: nudges,
+      elapsedSeconds: startedAt ? Math.round((Date.now() - startedAt) / 1000) : 0,
+    };
+    if (mode === "trial") {
+      saveDraft({ ...draft, savedAt: Date.now() });
+      onTrialFinish?.();
+      return;
+    }
     startSaving(async () => {
-      const result = await saveEntry({ promptId, text, aiSpans: spansOf(chars), nudgeCount: nudges, elapsedSeconds: elapsed });
+      const result = await saveEntry(draft);
       if (result?.error) setError(result.error);
     });
   }
 
   const shared = "w-full whitespace-pre-wrap break-words p-1 text-lg leading-[1.75] font-sans";
+  const hint =
+    nudges > 0
+      ? "Softer text came from a nudge. Keep it, change it, or let it go."
+      : "Stuck? A nudge offers the start of a sentence for you to finish.";
 
   return (
     <div className="flex flex-1 flex-col gap-4">
@@ -82,16 +116,14 @@ export function Editor({ promptId }: { promptId: number }) {
           autoFocus
         />
       </div>
-      <p className="text-sm text-muted-foreground">
-        {nudges > 0 ? "Softer text came from a nudge. Keep it, change it, or let it go." : "Stuck? A nudge offers the start of a sentence for you to finish."}
-      </p>
+      <p className="text-sm text-muted-foreground">{hint}</p>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <div className="flex items-center justify-between">
-        <Button type="button" variant="outline" onClick={onNudge} disabled={nudging || saving}>
-          {nudging ? "Thinking…" : "Nudge"}
+        <Button type="button" variant="outline" onClick={onNudge} disabled={nudging || saving || nudgesLeft <= 0}>
+          {nudging ? "Thinking…" : nudgeLimit !== undefined ? `Nudge (${nudgesLeft} left)` : "Nudge"}
         </Button>
         <Button type="button" onClick={onFinish} disabled={saving || text.trim().length === 0}>
-          {saving ? "Saving…" : "Finish"}
+          {saving ? "Saving…" : mode === "trial" ? "Save my answer" : "Finish"}
         </Button>
       </div>
     </div>

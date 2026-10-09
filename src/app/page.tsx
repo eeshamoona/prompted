@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WeekDots } from "@/components/week-dots";
@@ -8,7 +10,7 @@ import { DEFAULT_TZ, localDate, weekdayLong } from "@/lib/dates";
 import { CATEGORY_HINTS, getRotation, pickPrompt } from "@/lib/prompts";
 
 export default async function TodayPage({ searchParams }: PageProps<"/">) {
-  const { alt: altParam } = await searchParams;
+  const { alt: altParam, skip } = await searchParams;
   const alt = Math.max(0, Number(altParam) || 0);
 
   const user = await getUser();
@@ -17,6 +19,10 @@ export default async function TodayPage({ searchParams }: PageProps<"/">) {
   const today = localDate(timezone);
 
   const [rotation, entries] = await Promise.all([getRotation(), user ? getEntries(60) : Promise.resolve([])]);
+  // First-time visitors, and new accounts that haven't written yet, start with the welcome wizard.
+  const seenWelcome = (await cookies()).get("prompted_seen_welcome")?.value === "1";
+  if (!skip && ((!user && !seenWelcome) || (user && entries.length === 0 && !seenWelcome))) redirect("/welcome");
+
   const prompt = pickPrompt(rotation, today, alt);
   const stats = user ? progress(entries, timezone) : null;
 
