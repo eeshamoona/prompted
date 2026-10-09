@@ -1,26 +1,70 @@
 @import "tailwindcss";
+@import "@fontsource/instrument-sans/400.css";
+@import "@fontsource/instrument-sans/500.css";
+@import "@fontsource/instrument-sans/600.css";
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
 
+/* Calm minimal: soft neutrals, one sage accent, the words are the decoration. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: #f7f8f5;
+  --surface: #ffffff;
+  --foreground: #1f2421;
+  --muted: #eceee9;
+  --muted-foreground: #5f6661;
+  --border: #d7dbd4;
+  --primary: #3e5c4c;
+  --primary-foreground: #f7f8f5;
+  --nudge: #6e8a7b;
+  --ring: #3e5c4c;
+  --destructive: #a33a2b;
+  --radius: 0.75rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #161a17;
+    --surface: #1d221e;
+    --foreground: #e8ebe6;
+    --muted: #252b26;
+    --muted-foreground: #a3aba5;
+    --border: #343b35;
+    --primary: #8fb3a0;
+    --primary-foreground: #121613;
+    --nudge: #8fa89a;
+    --ring: #8fb3a0;
+    --destructive: #e07a6a;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--muted);
+  --color-accent-foreground: var(--foreground);
+  --color-nudge: var(--nudge);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
