@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WeekDots } from "@/components/week-dots";
 import { swapPrompt } from "@/app/actions";
+import { Landing } from "@/components/landing/landing";
 import { getEntries, getProfile, getUser, progress } from "@/lib/data";
 import { DEFAULT_TZ, localDate, promptNumber, weekdayLong } from "@/lib/dates";
 import { CATEGORY_HINTS, getRotation, pickPrompt } from "@/lib/prompts";
@@ -19,9 +20,13 @@ export default async function TodayPage({ searchParams }: PageProps<"/">) {
   const today = localDate(timezone);
 
   const [rotation, entries] = await Promise.all([getRotation(), user ? getEntries(60) : Promise.resolve([])]);
-  // First-time visitors, and new accounts that haven't written yet, start with the welcome wizard.
+  // Visitors without an account see the landing page; new accounts that haven't written yet start with the wizard.
+  if (!user) {
+    const featured = pickPrompt(rotation, today);
+    return <Landing prompt={featured ? { text: featured.text, category: featured.category, number: promptNumber(today) } : null} />;
+  }
   const seenWelcome = (await cookies()).get("prompted_seen_welcome")?.value === "1";
-  if (!skip && ((!user && !seenWelcome) || (user && entries.length === 0 && !seenWelcome))) redirect("/welcome");
+  if (!skip && entries.length === 0 && !seenWelcome) redirect("/welcome");
 
   const prompt = pickPrompt(rotation, today, alt);
   const stats = user ? progress(entries, timezone) : null;

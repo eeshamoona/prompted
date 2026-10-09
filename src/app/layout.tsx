@@ -27,7 +27,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased" data-theme={theme === "system" ? undefined : theme}>
       <body className="flex min-h-full flex-col">
-        <header className="mx-auto flex w-full max-w-xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-5 pt-5 sm:px-6 sm:pt-6 lg:max-w-2xl">
+        <header className={`mx-auto flex w-full flex-wrap items-center justify-between gap-x-4 gap-y-1 px-5 pt-5 sm:px-6 sm:pt-6 ${user ? "max-w-xl lg:max-w-2xl" : "max-w-5xl"}`}>
           <Link href="/" className="font-serif text-2xl text-foreground">
             Prompted
           </Link>

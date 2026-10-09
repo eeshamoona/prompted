@@ -23,7 +23,7 @@ const CARDS = [
   },
   {
     title: "Your answers add up",
-    body: "Every answer goes into your own private book, and a reader leaves you a short note. No scores. No right answers.",
+    body: "Get instant reader feedback on your entry with AI, then keep every answer in your own private book.",
   },
 ];
 
@@ -52,7 +52,7 @@ export function Wizard({
     return (
       <div className="flex flex-1 flex-col justify-center gap-8">
         <p className="text-xs uppercase tracking-[0.18em] text-primary">Welcome to Prompted</p>
-        <h1 className="font-serif text-5xl leading-tight">Wordle for your imagination.</h1>
+        <h1 className="font-serif text-5xl leading-tight">A daily spark for your imagination.</h1>
         <p className="text-lg text-muted-foreground">
           One prompt a day. No right answer, only yours. A few minutes, and you’ve made something no one else would have.
         </p>
