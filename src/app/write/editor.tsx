@@ -3,32 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { saveEntry } from "./actions";
-
-type Char = { c: string; ai: boolean };
-
-function spansOf(chars: Char[]): [number, number][] {
-  const spans: [number, number][] = [];
-  let start = -1;
-  chars.forEach((ch, i) => {
-    if (ch.ai && start < 0) start = i;
-    if (!ch.ai && start >= 0) {
-      spans.push([start, i]);
-      start = -1;
-    }
-  });
-  if (start >= 0) spans.push([start, chars.length]);
-  return spans;
-}
-
-function runsOf(chars: Char[]) {
-  const runs: { text: string; ai: boolean }[] = [];
-  for (const ch of chars) {
-    const last = runs[runs.length - 1];
-    if (last && last.ai === ch.ai) last.text += ch.c;
-    else runs.push({ text: ch.c, ai: ch.ai });
-  }
-  return runs;
-}
+import { applyEdit, insertNudge, runsOf, spansOf, textOf, type Char } from "@/lib/track";
 
 export function Editor({ promptId }: { promptId: number }) {
   const [chars, setChars] = useState<Char[]>([]);
@@ -39,21 +14,12 @@ export function Editor({ promptId }: { promptId: number }) {
   const [saving, startSaving] = useTransition();
   const ref = useRef<HTMLTextAreaElement>(null);
 
-  const text = chars.map((ch) => ch.c).join("");
+  const text = textOf(chars);
 
   // Typing, pasting and deleting are all "yours": diff old vs new text and mark the changed middle as user text.
   function onChange(next: string) {
     if (startedAt === null) setStartedAt(Date.now());
-    let prefix = 0;
-    while (prefix < text.length && prefix < next.length && text[prefix] === next[prefix]) prefix++;
-    let suffix = 0;
-    while (
-      suffix < text.length - prefix &&
-      suffix < next.length - prefix &&
-      text[text.length - 1 - suffix] === next[next.length - 1 - suffix]
-    ) suffix++;
-    const inserted = next.slice(prefix, next.length - suffix).split("").map((c) => ({ c, ai: false }));
-    setChars([...chars.slice(0, prefix), ...inserted, ...chars.slice(text.length - suffix)]);
+    setChars(applyEdit(chars, next));
   }
 
   async function onNudge() {
@@ -69,14 +35,13 @@ export function Editor({ promptId }: { promptId: number }) {
       });
       if (!res.ok) throw new Error();
       const { fragment } = (await res.json()) as { fragment: string };
-      const added = fragment.split("").map((c) => ({ c, ai: true }));
-      setChars((prev) => [...prev.slice(0, caret), ...added, ...prev.slice(caret)]);
+      setChars((prev) => insertNudge(prev, caret, fragment));
       setNudges((n) => n + 1);
       requestAnimationFrame(() => {
         const el = ref.current;
         if (!el) return;
         el.focus();
-        el.setSelectionRange(caret + added.length, caret + added.length);
+        el.setSelectionRange(caret + fragment.length, caret + fragment.length);
       });
     } catch {
       setError("The nudge didn’t come through. Try again in a moment.");
