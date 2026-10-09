@@ -4,6 +4,14 @@ import { WeekDots } from "@/components/week-dots";
 import { getEntries, getEntry, getProfile, progress, requireUser } from "@/lib/data";
 import { PERSONAS } from "@/lib/ai";
 import type { Persona } from "@/lib/data";
+import { Button } from "@/components/ui/button";
+import { answerReminder, setMood } from "./actions";
+
+const MOOD_OPTIONS = [
+  { value: "better", label: "Lighter" },
+  { value: "same", label: "About the same" },
+  { value: "not_really", label: "Not really" },
+] as const;
 
 export default async function DonePage({ params }: PageProps<"/done/[id]">) {
   const { id } = await params;
@@ -28,6 +36,40 @@ export default async function DonePage({ params }: PageProps<"/done/[id]">) {
           </section>
         )}
       </div>
+      <section aria-labelledby="mood-q" className="flex flex-col gap-3">
+        <p id="mood-q" className="text-sm text-muted-foreground">
+          {entry.mood ? "Thanks for telling me." : "How do you feel after writing? (optional)"}
+        </p>
+        <form action={setMood} className="flex flex-wrap gap-2">
+          <input type="hidden" name="entryId" value={entry.id} />
+          {MOOD_OPTIONS.map((m) => (
+            <Button
+              key={m.value}
+              type="submit"
+              name="mood"
+              value={m.value}
+              size="sm"
+              variant={entry.mood === m.value ? "default" : "outline"}
+              aria-pressed={entry.mood === m.value}
+            >
+              {m.label}
+            </Button>
+          ))}
+        </form>
+      </section>
+
+      {!profile.reminder_asked && !profile.reminder_enabled && (
+        <section aria-labelledby="reminder-q" className="flex flex-col gap-3 rounded-lg bg-muted p-5">
+          <p id="reminder-q">Want tomorrow’s prompt in your inbox each morning?</p>
+          <form action={answerReminder} className="flex gap-2">
+            <input type="hidden" name="entryId" value={entry.id} />
+            <Button type="submit" name="answer" value="yes" size="sm">Yes, remind me</Button>
+            <Button type="submit" name="answer" value="no" size="sm" variant="ghost">No thanks</Button>
+          </form>
+          <p className="text-xs text-muted-foreground">You can change this any time in Settings.</p>
+        </section>
+      )}
+
       <div className="flex items-center justify-between text-sm">
         <Link href={`/book/${entry.id}`} className="text-primary hover:underline">Read it in your book</Link>
         <span className="text-muted-foreground">A new prompt arrives tomorrow.</span>

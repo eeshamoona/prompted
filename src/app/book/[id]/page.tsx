@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { EntryText } from "@/components/entry-text";
 import { getEntry, requireUser } from "@/lib/data";
 import { shortDate } from "@/lib/dates";
+import { Reread } from "./reread";
 
 export default async function EntryPage({ params }: PageProps<"/book/[id]">) {
   const { id } = await params;
@@ -13,6 +14,7 @@ export default async function EntryPage({ params }: PageProps<"/book/[id]">) {
 
   return (
     <article className="flex flex-col gap-6">
+      <Reread entryId={entry.id} />
       <Link href="/book" className="text-sm text-muted-foreground hover:text-foreground">← Your book</Link>
       <p className="text-xs uppercase tracking-[0.16em] text-primary">
         {shortDate(entry.entry_date)} · {entry.v2_prompts?.category}

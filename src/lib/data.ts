@@ -11,6 +11,7 @@ export type Profile = {
   timezone: string;
   reminder_enabled: boolean;
   reminder_hour: number;
+  reminder_asked: boolean;
 };
 
 export type Entry = {
@@ -25,6 +26,9 @@ export type Entry = {
   elapsed_seconds: number;
   persona: string | null;
   reaction: string | null;
+  mood: "better" | "same" | "not_really" | null;
+  reread_count: number;
+  last_reread_on: string | null;
   created_at: string;
   v2_prompts?: { text: string; category: string } | null;
 };
