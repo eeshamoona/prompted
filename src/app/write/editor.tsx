@@ -104,7 +104,7 @@ export function Editor({ promptId, action = saveEntry, nudgeQuestion, submitLabe
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <div className="relative flex-1">
+      <div className="relative -mx-2 flex-1 rounded-lg px-2 ring-1 ring-transparent transition-shadow focus-within:ring-border">
         {/* Mirror layer shows nudge text in a softer color; the textarea on top handles typing. */}
         <div aria-hidden="true" className={`${shared} min-h-64 text-foreground`}>
           {runsOf(chars).map((run, i) => (
@@ -119,7 +119,7 @@ export function Editor({ promptId, action = saveEntry, nudgeQuestion, submitLabe
           value={text}
           onChange={(e) => onChange(e.target.value)}
           placeholder="There’s no right answer. Start anywhere."
-          className={`${shared} absolute inset-0 h-full resize-none overflow-hidden bg-transparent text-transparent caret-foreground outline-none placeholder:text-muted-foreground`}
+          className={`${shared} absolute inset-0 h-full resize-none overflow-hidden bg-transparent text-transparent caret-foreground outline-none focus-visible:outline-none placeholder:text-muted-foreground`}
           autoFocus
         />
       </div>
