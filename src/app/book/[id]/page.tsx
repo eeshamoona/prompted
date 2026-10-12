@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EntryText } from "@/components/entry-text";
-import { getEntry, requireUser } from "@/lib/data";
+import { getEntry, getProfile, requireUser } from "@/lib/data";
+import { OthersAnswers } from "@/components/others-answers";
+import { ShareToggle } from "@/components/share-toggle";
 import { PERSONAS } from "@/lib/ai";
 import type { Persona } from "@/lib/data";
 import { promptNumber, shortDate } from "@/lib/dates";
@@ -16,8 +18,8 @@ function ownShare(text: string, spans: [number, number][]) {
 
 export default async function EntryPage({ params }: PageProps<"/book/[id]">) {
   const { id } = await params;
-  await requireUser();
-  const entry = await getEntry(id);
+  const user = await requireUser();
+  const [entry, profile] = await Promise.all([getEntry(id), getProfile(user.id)]);
   if (!entry) notFound();
   const persona = PERSONAS[(entry.persona as Persona) ?? "muse"] ?? PERSONAS.muse;
   const minutes = Math.max(1, Math.round(entry.elapsed_seconds / 60));
@@ -74,6 +76,9 @@ export default async function EntryPage({ params }: PageProps<"/book/[id]">) {
           <Link href={`/reply/${entry.id}`} className="text-sm text-primary hover:underline">Answer it as part two</Link>
         </div>
       ) : null}
+
+      <ShareToggle entryId={entry.id} shared={entry.shared} displayName={profile.display_name} />
+      <OthersAnswers promptId={entry.prompt_id} />
 
       <details className="text-sm text-muted-foreground">
         <summary className="cursor-pointer py-1">If you’re curious</summary>

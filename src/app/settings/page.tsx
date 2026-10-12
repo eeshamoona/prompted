@@ -36,6 +36,19 @@ export default async function SettingsPage({ searchParams }: PageProps<"/setting
           <p className="text-sm text-muted-foreground">Skipped on days you’ve already written.</p>
         </fieldset>
 
+        <div className="flex flex-col gap-2">
+          <label htmlFor="display_name" className="text-sm font-medium">Name shown when you share an answer</label>
+          <input
+            id="display_name"
+            name="display_name"
+            defaultValue={profile.display_name ?? ""}
+            maxLength={40}
+            placeholder="A fellow writer"
+            className="h-12 rounded-lg border border-border bg-surface px-4"
+          />
+          <p className="text-sm text-muted-foreground">Answers stay private unless you share them one at a time.</p>
+        </div>
+
         <TimezoneField current={profile.timezone} />
 
         <div className="flex items-center gap-4">

@@ -24,6 +24,7 @@ export async function saveSettings(formData: FormData) {
     .update({
       persona: persona in PERSONAS ? persona : "muse",
       reminder_enabled: formData.get("reminder") === "on",
+      display_name: String(formData.get("display_name") ?? "").trim().slice(0, 40) || null,
       ...(validTimezone(timezone) ? { timezone } : {}),
     })
     .eq("user_id", user.id);

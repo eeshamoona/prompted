@@ -9,6 +9,9 @@ import { promptNumber } from "@/lib/dates";
 import { milestoneFor, withoutQuestion } from "@/lib/text";
 import { cn } from "@/lib/utils";
 import { answerReminder, setMood } from "./actions";
+import { OthersAnswers } from "@/components/others-answers";
+import { ShareToggle } from "@/components/share-toggle";
+import { wantAnother } from "@/app/share-actions";
 
 const MOOD_OPTIONS = [
   { value: "better", label: "Lighter" },
@@ -85,6 +88,9 @@ export default async function DonePage({ params }: PageProps<"/done/[id]">) {
         </section>
       )}
 
+      <ShareToggle entryId={entry.id} shared={entry.shared} displayName={profile.display_name} />
+      <OthersAnswers promptId={entry.prompt_id} />
+
       <section aria-labelledby="mood-q" className="flex flex-col gap-3">
         <p id="mood-q" className="text-sm text-muted-foreground">
           {entry.mood ? "Thanks for telling me." : "How do you feel after writing? (optional)"}
@@ -113,8 +119,14 @@ export default async function DonePage({ params }: PageProps<"/done/[id]">) {
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
         <Link href={`/book/${entry.id}`} className="text-primary hover:underline">Read it in your book</Link>
-        <span className="text-muted-foreground">A new prompt arrives tomorrow.</span>
+        <form action={wantAnother}>
+          <input type="hidden" name="entryId" value={entry.id} />
+          <button type="submit" className="text-muted-foreground hover:text-foreground hover:underline">
+            Want another prompt?
+          </button>
+        </form>
       </div>
+      <p className="-mt-4 text-sm text-muted-foreground">A new prompt arrives tomorrow.</p>
     </div>
   );
 }

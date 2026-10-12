@@ -111,3 +111,14 @@ test("milestones: first answer, 7 and 30 days, only for today's entry", () => {
   assert.equal(milestoneFor(9, 5, true), null);
   assert.equal(milestoneFor(1, 1, false), null);
 });
+
+import { parseSamples } from "../src/lib/samples";
+
+test("sample answers parse from messy model output and get fixed voice labels", () => {
+  const raw = 'Here you go:\n[{"title":"Leftover Day","text":"A holiday for food that is better the next morning, obviously."},{"title":"x","text":"too short"},{"title":"Window Seat Day","text":"Everyone who never had the window seat finally gets it today."}] Enjoy!';
+  const s = parseSamples(raw);
+  assert.equal(s.length, 2);
+  assert.equal(s[0].author_label, "A daydreamer");
+  assert.equal(s[1].author_label, "A storyteller");
+  assert.deepEqual(parseSamples("not json"), []);
+});

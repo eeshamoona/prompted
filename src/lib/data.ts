@@ -12,6 +12,7 @@ export type Profile = {
   reminder_enabled: boolean;
   reminder_hour: number;
   reminder_asked: boolean;
+  display_name: string | null;
 };
 
 export type Entry = {
@@ -34,6 +35,7 @@ export type Entry = {
   reply_ai_spans: [number, number][];
   reply_reaction: string | null;
   replied_at: string | null;
+  shared: boolean;
   created_at: string;
   v2_prompts?: { text: string; category: string } | null;
 };

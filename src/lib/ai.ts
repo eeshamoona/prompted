@@ -99,3 +99,23 @@ Rules:
   // Guarantee the exchange ends here even if the model slips in a question.
   return response.output_text.trim().replace(/\?+(["”’)]*)\s*$/, ".$1");
 }
+
+/** Three short sample answers in distinct voices, so a prompt never looks empty before friends share. */
+export async function sampleAnswers(prompt: string): Promise<string> {
+  const { SAMPLE_VOICES } = await import("@/lib/samples");
+  const voices = SAMPLE_VOICES.map((v, i) => `${i + 1}. ${v.label}: ${v.style}`).join("\n");
+  const response = await client.responses.create({
+    model: MODEL,
+    reasoning: { effort: "none" },
+    instructions: `Write three short sample answers to a playful creative writing prompt, one per voice, in this order:
+${voices}
+Rules:
+- 50 to 90 words each, first person, plain everyday language.
+- Each takes a genuinely different angle on the prompt. No right answer.
+- Warm and light; nothing sad, scary or heavy. No real people, brands, or copyrighted characters.
+Return ONLY a JSON array of three objects: [{"title": "2 to 5 word title", "text": "the answer"}].`,
+    input: `Prompt: ${prompt}`,
+    max_output_tokens: 700,
+  });
+  return response.output_text;
+}
