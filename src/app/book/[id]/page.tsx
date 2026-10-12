@@ -50,7 +50,7 @@ export default async function EntryPage({ params }: PageProps<"/book/[id]">) {
       {note && (
         <section className="flex flex-col gap-2 border-t border-border pt-5" aria-label={`Note from your ${persona.label}`}>
           <p className="text-xs uppercase tracking-[0.16em] text-primary">Your {persona.label}</p>
-          <p className="font-serif text-xl leading-snug text-muted-foreground">{note}</p>
+          <p className="text-lg leading-relaxed">{note}</p>
         </section>
       )}
 
@@ -61,10 +61,10 @@ export default async function EntryPage({ params }: PageProps<"/book/[id]">) {
             <span className="text-xs uppercase tracking-[0.16em] text-primary">Part two</span>
             <span className="h-px flex-1 bg-border" />
           </div>
-          <p className="font-serif text-xl italic leading-snug text-muted-foreground">{question}</p>
+          <p className="text-lg font-medium leading-snug">{question}</p>
           <EntryText text={entry.reply_text} spans={entry.reply_ai_spans ?? []} />
           {entry.reply_reaction && (
-            <p className="rounded-xl bg-muted p-4 font-serif text-lg leading-snug">
+            <p className="rounded-xl bg-muted p-4 text-base leading-relaxed">
               <span className="mb-1 block font-sans text-xs uppercase tracking-[0.14em] text-primary">Your {persona.label}</span>
               {entry.reply_reaction}
             </p>
@@ -72,7 +72,7 @@ export default async function EntryPage({ params }: PageProps<"/book/[id]">) {
         </section>
       ) : question ? (
         <div className="flex flex-col gap-2 rounded-xl bg-muted p-4">
-          <p className="font-serif text-xl leading-snug text-primary">{question}</p>
+          <p className="text-lg font-medium leading-snug text-primary">{question}</p>
           <Link href={`/reply/${entry.id}`} className="text-sm text-primary hover:underline">Answer it as part two</Link>
         </div>
       ) : null}

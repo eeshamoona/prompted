@@ -73,7 +73,7 @@ Rules:
 - Quote or echo ONE specific phrase they wrote, so they know you really read it.
 - End with exactly ONE short, curious question that invites them to say a little more about THEIR answer (in your voice). It must be the last sentence.
 - Never give a score, grade, or rating. Never rewrite their answer or tell them it is "good writing" generically.
-- There is no right answer to the prompt; react to what makes THEIR answer theirs.
+- There is no wrong answer to the prompt; react to what makes THEIR answer theirs.
 - If the answer is very short, be just as warm and briefer.`,
     input: `Prompt: ${prompt}\n\nTheir answer:\n${text}`,
     max_output_tokens: 160,
@@ -111,7 +111,7 @@ export async function sampleAnswers(prompt: string): Promise<string> {
 ${voices}
 Rules:
 - 50 to 90 words each, first person, plain everyday language.
-- Each takes a genuinely different angle on the prompt. No right answer.
+- Each takes a genuinely different angle on the prompt. No wrong answer.
 - Warm and light; nothing sad, scary or heavy. No real people, brands, or copyrighted characters.
 Return ONLY a JSON array of three objects: [{"title": "2 to 5 word title", "text": "the answer"}].`,
     input: `Prompt: ${prompt}`,

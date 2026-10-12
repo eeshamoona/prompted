@@ -54,7 +54,7 @@ export function Wizard({
         <p className="text-xs uppercase tracking-[0.18em] text-primary">Welcome to Prompted</p>
         <h1 className="font-serif text-5xl leading-tight">A daily spark for your imagination.</h1>
         <p className="text-lg text-muted-foreground">
-          One prompt a day. No right answer, only yours. A few minutes, and you’ve made something no one else would have.
+          One prompt a day. No wrong answer, only yours. A few minutes, and you’ve made something no one else would have.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           {variant === "full" ? (
@@ -104,7 +104,7 @@ export function Wizard({
         <p className="text-xs uppercase tracking-[0.18em] text-primary">Today · {prompt.category}</p>
         <h1 className="font-serif text-3xl leading-snug">{prompt.text}</h1>
         {variant === "none" && (
-          <p className="text-sm text-muted-foreground">There’s no right answer. Write a few lines, and tap Nudge if you get stuck.</p>
+          <p className="text-sm text-muted-foreground">There’s no wrong answer. Write a few lines, and tap Nudge if you get stuck.</p>
         )}
         <div className="h-px bg-border" />
         {signedIn ? (

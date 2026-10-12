@@ -20,7 +20,7 @@ export default async function ReplyPage({ params }: PageProps<"/reply/[id]">) {
     <div className="flex flex-1 flex-col gap-5">
       <Link href={`/done/${entry.id}`} className="text-sm text-muted-foreground hover:text-foreground">← Back</Link>
       <p className="text-xs uppercase tracking-[0.16em] text-primary">Your {persona.label} asked</p>
-      <h1 className="font-serif text-2xl leading-snug text-muted-foreground sm:text-3xl">{entry.reply_question}</h1>
+      <h1 className="font-serif text-3xl leading-snug">{entry.reply_question}</h1>
       <div className="h-px bg-border" />
       <Editor promptId={entry.prompt_id} action={save} nudgeQuestion={entry.reply_question} submitLabel="Add to my answer" />
     </div>

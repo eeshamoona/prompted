@@ -7,7 +7,7 @@ import { ThemeToggle, type ThemeChoice } from "@/components/theme-toggle";
 
 export const metadata: Metadata = {
   title: "Prompted",
-  description: "A daily creative warm-up. One prompt, no right answer, only yours.",
+  description: "A daily creative warm-up. One prompt, no wrong answer, only yours.",
 };
 
 export const viewport: Viewport = {

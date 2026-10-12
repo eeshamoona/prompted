@@ -118,7 +118,7 @@ export function Editor({ promptId, action = saveEntry, nudgeQuestion, submitLabe
           ref={ref}
           value={text}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="There’s no right answer. Start anywhere."
+          placeholder="There’s no wrong answer. Start anywhere."
           className={`${shared} absolute inset-y-0 inset-x-2 h-full resize-none overflow-hidden bg-transparent text-transparent caret-foreground outline-none focus-visible:outline-none placeholder:text-muted-foreground`}
           autoFocus
         />

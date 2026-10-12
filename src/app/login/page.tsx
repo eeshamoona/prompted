@@ -11,7 +11,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
     <div className="flex flex-1 flex-col justify-center gap-8">
       <div className="flex flex-col gap-2">
         <h1 className="font-serif text-4xl">Welcome to Prompted</h1>
-        <p className="text-muted-foreground">One prompt a day. No right answer, only yours.</p>
+        <p className="text-muted-foreground">One prompt a day. No wrong answer, only yours.</p>
       </div>
       {message && <p role="status" className="rounded-lg bg-muted p-4 text-sm">{message}</p>}
       {error && <p role="alert" className="rounded-lg bg-muted p-4 text-sm text-destructive">{error}</p>}

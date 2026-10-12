@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { answerReminder, setMood } from "./actions";
 import { OthersAnswers } from "@/components/others-answers";
 import { ShareToggle } from "@/components/share-toggle";
-import { wantAnother } from "@/app/share-actions";
+import { AnotherPrompt } from "@/components/another-prompt";
 
 const MOOD_OPTIONS = [
   { value: "better", label: "Lighter" },
@@ -75,10 +75,10 @@ export default async function DonePage({ params }: PageProps<"/done/[id]">) {
       {entry.reaction && (
         <section className="flex flex-col gap-3" aria-label="A note from your reader">
           <p className="text-xs uppercase tracking-[0.16em] text-primary">A note from your {persona.label}</p>
-          {note && <p className="font-serif text-xl leading-snug sm:text-2xl">{note}</p>}
+          {note && <p className="text-lg leading-relaxed sm:text-xl">{note}</p>}
           {question && !entry.reply_text && (
             <div className="flex flex-col gap-3 rounded-xl bg-muted p-4">
-              <p className="font-serif text-xl leading-snug text-primary">{question}</p>
+              <p className="text-lg font-medium leading-snug text-primary">{question}</p>
               <Button asChild size="sm" className="self-start">
                 <Link href={`/reply/${entry.id}`}>Answer the question</Link>
               </Button>
@@ -119,12 +119,7 @@ export default async function DonePage({ params }: PageProps<"/done/[id]">) {
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
         <Link href={`/book/${entry.id}`} className="text-primary hover:underline">Read it in your book</Link>
-        <form action={wantAnother}>
-          <input type="hidden" name="entryId" value={entry.id} />
-          <button type="submit" className="text-muted-foreground hover:text-foreground hover:underline">
-            Want another prompt?
-          </button>
-        </form>
+        <AnotherPrompt href="/?alt=1&skip=1" promptId={entry.prompt_id} kind="want_another" label="Want another prompt?" className="hover:underline" />
       </div>
       <p className="-mt-4 text-sm text-muted-foreground">A new prompt arrives tomorrow.</p>
     </div>

@@ -32,7 +32,7 @@ export function Landing({ prompt }: { prompt: { text: string; category: string; 
           <p className="text-xs uppercase tracking-[0.18em] text-primary">A daily creative warm-up</p>
           <h1 className="font-serif text-5xl leading-[1.02] text-balance sm:text-6xl">A daily spark for your imagination.</h1>
           <p className="text-lg leading-relaxed text-muted-foreground">
-            One curated prompt a day, with no right answer. Write a few lines, take a nudge if you’re stuck, and get instant reader feedback on your entry with AI. Whatever you write stays yours.
+            One curated prompt a day, with no wrong answer. Write a few lines, take a nudge if you’re stuck, and get instant reader feedback on your entry with AI. Whatever you write stays yours.
           </p>
           <div className="flex flex-wrap items-center gap-4">
             <Button asChild>
@@ -74,7 +74,7 @@ export function Landing({ prompt }: { prompt: { text: string; category: string; 
           <ArrowDown className="size-6 text-primary" strokeWidth={1.6} aria-hidden="true" />
         </div>
 
-        <Step time="7:58 am" title="A prompt arrives" body="One question each morning, curated so there’s no right answer. Sometimes whimsical, sometimes cozy, sometimes about you.">
+        <Step time="7:58 am" title="A prompt arrives" body="One question each morning, curated so there’s no wrong answer. Sometimes whimsical, sometimes cozy, sometimes about you.">
           <div className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-6">
             <span className="text-xs uppercase tracking-[0.16em] text-primary">Pretend</span>
             <span className="font-serif text-2xl leading-snug">You’re the last slice of pizza at a party. How do you feel as everyone debates whether to take you?</span>

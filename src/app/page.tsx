@@ -4,8 +4,8 @@ import { redirect } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WeekDots } from "@/components/week-dots";
-import { swapPrompt } from "@/app/actions";
 import { Landing } from "@/components/landing/landing";
+import { AnotherPrompt } from "@/components/another-prompt";
 import { getEntries, getProfile, getUser, progress } from "@/lib/data";
 import { DEFAULT_TZ, localDate, promptNumber, weekdayLong } from "@/lib/dates";
 import { CATEGORY_HINTS, getRotation, pickPrompt } from "@/lib/prompts";
@@ -53,7 +53,7 @@ export default async function TodayPage({ searchParams }: PageProps<"/">) {
         <h1 id="prompt" className="font-serif text-[2.4rem] leading-tight text-balance sm:text-5xl">
           {prompt.text}
         </h1>
-        <p className="text-sm text-muted-foreground">A few minutes. No right answer.</p>
+        <p className="text-sm text-muted-foreground">A few minutes. No wrong answer.</p>
         {stats?.writtenToday && (
           <p className="text-sm text-muted-foreground">
             You’ve already written today. <Link href="/book" className="text-primary hover:underline">See it in your book</Link>, or write another.
@@ -62,13 +62,7 @@ export default async function TodayPage({ searchParams }: PageProps<"/">) {
       </section>
 
       <div className="flex items-center justify-between">
-        <form action={swapPrompt}>
-          <input type="hidden" name="alt" value={alt} />
-          <input type="hidden" name="promptId" value={prompt.id} />
-          <Button type="submit" variant="ghost" className="px-0 hover:bg-transparent">
-            Another prompt
-          </Button>
-        </form>
+        <AnotherPrompt href={`/?alt=${alt + 1}`} promptId={prompt.id} kind="swapped" label="Another prompt" className="text-base" />
         <Button asChild size="icon" aria-label="Start writing">
           <Link href={user ? writeHref : `/login?next=${encodeURIComponent(writeHref)}`}>
             <ArrowRight className="size-6" strokeWidth={1.8} />
