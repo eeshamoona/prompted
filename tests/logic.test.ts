@@ -122,3 +122,28 @@ test("sample answers parse from messy model output and get fixed voice labels", 
   assert.equal(s[1].author_label, "A storyteller");
   assert.deepEqual(parseSamples("not json"), []);
 });
+
+import { computeMetrics, maskEmail } from "../src/lib/metrics";
+
+test("metrics: daily writers, coming back, habit", () => {
+  const e = (user_id: string, entry_date: string) => ({
+    user_id, entry_date, word_count: 100, nudge_count: 0, own_percentage: 100,
+    elapsed_seconds: 300, reply_text: null, shared: false, mood: null, reread_count: 0,
+  });
+  const entries = [
+    e("a", "2026-10-12"), e("a", "2026-10-13"), e("a", "2026-10-14"),
+    e("b", "2026-10-12"),
+    e("c", "2026-10-14"),
+  ];
+  const users = ["a", "b", "c", "d"].map((id) => ({ id, email: `${id}@x.com`, created_at: "2026-10-10T00:00:00Z" }));
+  const m = computeMetrics({ entries, events: [{ kind: "swapped" }, { kind: "want_another" }], users, profiles: [] }, "2026-10-14");
+  assert.equal(m.activity.dauToday, 2);
+  assert.equal(m.activity.wau, 3);
+  assert.equal(m.reach.activationPct, 75);
+  assert.equal(m.retention.cameBack, 1);      // only "a" wrote on a later day than their first
+  assert.equal(m.retention.cameBackOf, 2);    // a and b started before today; c started today
+  assert.equal(m.retention.d1, 1);
+  assert.equal(m.retention.habitPeople, 1);   // "a" wrote 3 days
+  assert.equal(m.choice.wantAnother, 1);
+  assert.equal(maskEmail("eesha@gmail.com"), "e***@gmail.com");
+});

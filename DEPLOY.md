@@ -74,3 +74,8 @@ Landing page → trial (one nudge) → create account → finish → reader note
 - v1 and v2 share one Supabase project. After the Site URL change, a sign-in email sent from v1
   may open v2 instead. No one uses v1, so this is acceptable.
 - Read the experiments with the queries in `supabase/queries.sql`.
+
+## Seeing how it's going (/admin)
+
+Add `ADMIN_EMAILS` in Vercel (your sign-in email) and redeploy. Then open `/admin` while signed in. Anyone else gets a 404.
+It shows daily writers against the goal of 100, who comes back, days per week, and how the features are doing.
