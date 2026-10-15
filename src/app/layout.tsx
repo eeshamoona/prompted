@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { getUser } from "@/lib/data";
+import { isAdmin } from "@/lib/admin";
 import { ThemeToggle, type ThemeChoice } from "@/components/theme-toggle";
 
 export const metadata: Metadata = {
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <Link href="/" className="py-2 hover:text-foreground">Today</Link>
                 <Link href="/book" className="py-2 hover:text-foreground">Your book</Link>
                 <Link href="/settings" className="py-2 hover:text-foreground">Settings</Link>
+                {isAdmin(user.email) && <Link href="/admin" className="py-2 hover:text-foreground">Admin</Link>}
               </nav>
             ) : (
               <Link href="/login" className="py-2 text-sm text-primary hover:underline">Sign in</Link>
