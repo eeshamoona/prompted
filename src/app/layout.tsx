@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { getUser } from "@/lib/data";
 import { isAdmin } from "@/lib/admin";
@@ -47,6 +48,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </div>
         </header>
         <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-5 pb-10 pt-6 sm:px-6 sm:pt-8 lg:max-w-2xl">{children}</main>
+        <Analytics />
       </body>
     </html>
   );
