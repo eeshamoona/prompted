@@ -5,7 +5,7 @@ import { pickPrompt, type Prompt } from "@/lib/prompts";
 import { isAllowed, sendReminder } from "@/lib/email";
 
 /**
- * Runs once each morning (vercel.json). Emails today's prompt to people who turned reminders on,
+ * Runs once each evening (vercel.json, 00:00 UTC = about 7pm Chicago). Emails today's prompt to people who turned reminders on,
  * haven't written today, and haven't been reminded today. Only allowlisted addresses are emailed.
  */
 export async function GET(request: NextRequest) {
@@ -41,8 +41,13 @@ export async function GET(request: NextRequest) {
     const prompt = pickPrompt((prompts ?? []) as Prompt[], today);
     if (!prompt || !email) { results.skipped++; continue; }
 
+    const { count: answers } = await db
+      .from("v2_entries")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", profile.user_id);
+
     try {
-      await sendReminder(email, prompt.text, appUrl);
+      await sendReminder(email, prompt.text, appUrl, answers ?? 0);
       await db.from("v2_profiles").update({ last_reminded_on: today }).eq("user_id", profile.user_id);
       results.sent++;
     } catch {

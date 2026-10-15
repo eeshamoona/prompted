@@ -69,7 +69,7 @@ Landing page → trial (one nudge) → create account → finish → reader note
 
 ## Good to know
 
-- The reminder runs once a day at 13:00 UTC: about 8am Central now, 7am after Nov 1 (daylight
+- The reminder runs once a day at 00:00 UTC: about 7pm Central now, 6pm after Nov 1 (daylight
   saving ends). Vercel's free plan may run it up to 59 minutes late.
 - v1 and v2 share one Supabase project. After the Site URL change, a sign-in email sent from v1
   may open v2 instead. No one uses v1, so this is acceptable.

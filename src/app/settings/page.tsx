@@ -28,10 +28,10 @@ export default async function SettingsPage({ searchParams }: PageProps<"/setting
         </fieldset>
 
         <fieldset className="flex flex-col gap-3">
-          <legend className="mb-2 text-sm font-medium">Morning reminder</legend>
+          <legend className="mb-2 text-sm font-medium">Evening reminder</legend>
           <label className="flex cursor-pointer items-center gap-3">
             <input type="checkbox" name="reminder" defaultChecked={profile.reminder_enabled} className="size-5 accent-[var(--primary)]" />
-            <span>Email me today’s prompt each morning, around 8am Central</span>
+            <span>Email me today’s prompt each evening, around 7pm Central</span>
           </label>
           <p className="text-sm text-muted-foreground">Skipped on days you’ve already written.</p>
         </fieldset>

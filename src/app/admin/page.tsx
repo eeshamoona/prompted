@@ -141,7 +141,7 @@ export default async function AdminPage() {
         </div>
       </Section>
 
-      <Section title="Reminder check" hint="Reminders go out about 8 am Chicago time, only to people who turned them on and are on the allowlist.">
+      <Section title="Reminder check" hint="Reminders go out about 7 pm Chicago time, only to people who turned them on and are on the allowlist.">
         <ul className="flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 text-sm">
           {setup.map((s) => (
             <li key={s.label}>{s.ok ? "✓" : "✗"} {s.label}</li>

@@ -14,8 +14,8 @@ A daily creative warm-up: one curated, no-right-answer prompt a day. An AI nudge
 - **Write** (`/write`): nudge text is tracked character by character and shown in a softer color.
 - **Finished** (`/done/[id]`): streak, days this week, and a reader's note in your chosen persona (no scores).
 - **Your book** (`/book`): every answer, newest first.
-- **Settings**: reader persona, morning reminder (off by default), timezone.
-- **Reminder** (`/api/cron/reminder`): runs once each morning on Vercel. Only emails addresses in `EMAIL_ALLOWLIST`.
+- **Settings**: reader persona, evening reminder (off by default), timezone.
+- **Reminder** (`/api/cron/reminder`): runs once each evening on Vercel (00:00 UTC). Only emails addresses in `EMAIL_ALLOWLIST`.
 
 ## Data
 

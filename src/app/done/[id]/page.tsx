@@ -107,7 +107,7 @@ export default async function DonePage({ params }: PageProps<"/done/[id]">) {
 
       {!profile.reminder_asked && !profile.reminder_enabled && (
         <section aria-labelledby="reminder-q" className="flex flex-col gap-3 rounded-xl bg-muted p-5">
-          <p id="reminder-q">Want tomorrow’s prompt in your inbox each morning?</p>
+          <p id="reminder-q">Want tomorrow’s prompt in your inbox each evening?</p>
           <form action={answerReminder} className="flex flex-wrap gap-2">
             <input type="hidden" name="entryId" value={entry.id} />
             <Button type="submit" name="answer" value="yes" size="sm">Yes, remind me</Button>
