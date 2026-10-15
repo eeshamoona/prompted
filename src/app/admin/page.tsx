@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { isAdmin, loadMetrics } from "@/lib/admin";
 import { getUser } from "@/lib/data";
 import { shortDate } from "@/lib/dates";
+import { isAllowed } from "@/lib/email";
+import { SendTest } from "@/app/admin/send-test";
 
 export const metadata = { title: "Admin · Prompted", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
@@ -36,6 +38,12 @@ export default async function AdminPage() {
   const maxWriters = Math.max(1, ...m.activity.series.map((d) => d.writers));
   const maxHabit = Math.max(1, ...m.retention.habit.map((h) => h.people));
   const goalPct = Math.min(100, Math.round((m.goal.dauToday / m.goal.target) * 100));
+  const setup = [
+    { ok: !!process.env.RESEND_API_KEY, label: "RESEND_API_KEY is set" },
+    { ok: !!process.env.EMAIL_FROM, label: "EMAIL_FROM is set" },
+    { ok: isAllowed(user.email), label: "Your email is in EMAIL_ALLOWLIST" },
+    { ok: !!process.env.CRON_SECRET, label: "CRON_SECRET is set" },
+  ];
   const moodTotal = m.quality.mood.better + m.quality.mood.same + m.quality.mood.not_really;
 
   return (
@@ -131,6 +139,16 @@ export default async function AdminPage() {
             </p>
           )}
         </div>
+      </Section>
+
+      <Section title="Reminder check" hint="Reminders go out about 8 am Chicago time, only to people who turned them on and are on the allowlist.">
+        <ul className="flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 text-sm">
+          {setup.map((s) => (
+            <li key={s.label}>{s.ok ? "✓" : "✗"} {s.label}</li>
+          ))}
+          <li>{m.reach.remindersOn} {m.reach.remindersOn === 1 ? "person has" : "people have"} reminders turned on</li>
+        </ul>
+        <SendTest />
       </Section>
 
       <Section title="People" hint="Emails are partly hidden.">
